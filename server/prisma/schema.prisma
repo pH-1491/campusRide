@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  phone       String?
+  role        String   @default("PASSENGER")
+  avatar      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ridesAsPassenger Ride[]   @relation("PassengerRides")
+  ratingsGiven     Rating[] @relation("RatingsGiven")
+  driverProfile    Driver?
+}
+
+model Driver {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleNumber    String
+  vehicleType      String   @default("E-Rickshaw")
+  licenseNumber    String
+  isVerified       Boolean  @default(false)
+  isOnline         Boolean  @default(false)
+  currentLat       Float?
+  currentLng       Float?
+  totalRides       Int      @default(0)
+  averageRating    Float    @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  rides            Ride[]
+  ratingsReceived  Rating[] @relation("RatingsReceived")
+}
+
+model Ride {
+  id               String    @id @default(uuid())
+  passengerId      String
+  passenger        User      @relation("PassengerRides", fields: [passengerId], references: [id])
+  driverId         String?
+  driver           Driver?   @relation(fields: [driverId], references: [id])
+  pickupLocation   String
+  pickupLat        Float?
+  pickupLng        Float?
+  dropLocation     String
+  dropLat          Float?
+  dropLng          Float?
+  status           String    @default("REQUESTED")
+  fare             Float?
+  distance         Float?
+  requestedAt      DateTime  @default(now())
+  acceptedAt       DateTime?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  cancelledAt      DateTime?
+  cancelReason     String?
+  scheduledFor     DateTime?
+  rating           Rating?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Rating {
+  id         String   @id @default(uuid())
+  rideId     String   @unique
+  ride       Ride     @relation(fields: [rideId], references: [id])
+  giverId    String
+  giver      User     @relation("RatingsGiven", fields: [giverId], references: [id])
+  driverId   String
+  driver     Driver   @relation("RatingsReceived", fields: [driverId], references: [id])
+  score      Int
+  feedback   String?
+  createdAt  DateTime @default(now())
+}
