@@ -76,14 +76,14 @@ A Real-Time Campus Mobility and Ride Management Platform designed to streamline 
 
    **server/.env**
    ```env
-   PORT=5000
+   PORT=5001
    MONGODB_URI=mongodb://localhost:27017/campusRide
    NODE_ENV=development
    ```
 
    **client/.env**
    ```env
-   VITE_API_URL=http://localhost:5000
+   VITE_API_URL=http://localhost:5001
    ```
 
 5. **Start Database Services (Optional - with Docker)**
@@ -224,11 +224,7 @@ We welcome contributions! Please follow these steps:
 
 ---
 
-## 📄 License
 
-This project is open source and available under the MIT License.
-
----
 
 ## 📧 Support & Contact
 
